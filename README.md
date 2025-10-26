@@ -58,7 +58,7 @@ Works both on a web server and just locally opened in a web browser (latter use 
 
 ## Libraries Used
 
-- highlight.js v11.9.0
+- [highlight.js v11.9.0](https://highlightjs.org/) (local, no CDN)
 - GitHub theme
 
 ## Browser Compatibility
@@ -78,7 +78,7 @@ This application has **ZERO data transmission**. You can verify this yourself:
 1. Open browser DevTools (F12 or Cmd+Option+I)
 2. Go to **Network** tab
 3. Open the application and load your notebooks
-4. **Observation**: You will see NO network requests except for loading the page itself (html, css, js files)
+4. **Observation**: You will see NO network requests beyond loading the page itself (html, css, js files)
 5. **Result**: After the page loads, NO data is transmitted anywhere
 
 #### Code-Level Proof:
@@ -90,9 +90,10 @@ This application has **ZERO data transmission**. You can verify this yourself:
 
 #### Privacy summary
 
-* ***No Data Transmission**: All file processing happens locally in your browser. No files, file content, or any data is ever sent to any server.
-* **File Access**: The application only reads files that you explicitly select or drag-and-drop. It never accesses files without your explicit permission.
-* **No Storage**: Your files are kept in browser memory only and are discarded when you refresh the page or click "Clear All". No cookies, localStorage, or IndexedDB are used.
+* ***No Data Transmission**: All file processing happens locally in your browser. No files, file content, or nor any any other data is ever sent to any server.
+* **File Access**: The application only reads files that you explicitly select or drag-and-drop. It never accesses files without your explicit permission. File access is handled using the File System Access API, which only reads files you explicitly select or drag-and-drop. No files are accessed without your permission.
+* **File Preview**: File previews are loaded lazily (only when visible) using `IntersectionObserver`, but all processing remains local.
+* **No Storage**: Files are kept in browser memory only and are automatically discarded when you refresh the page or click "Clear All". No cookies, localStorage, or IndexedDB are used.
 * **XSS Protection**: All file contents are properly escaped before rendering to prevent cross-site scripting vulnerabilities (see `escapeHtml()` function in `js/nbexplorer.js:66-74`).
 *  **Open Source**: You can inspect the code yourself in `js/nbexplorer.js` to verify it only reads and displays your files locally.
 
@@ -100,7 +101,8 @@ This application has **ZERO data transmission**. You can verify this yourself:
 
 ## Caveats
 
-* Rendering is not as pretty as https://nbviewer.org but it kind of does the job.
+* Rendering is **functional but basic** (not as polished as [nbviewer.org](https://nbviewer.org)).
+* Designed for **privacy and simplicity**, not aesthetics.
 
 ## Related projects
 
