@@ -12,7 +12,7 @@ cd nbexplorer
 ```
 Open the file directly with a browser:
 
-`open index.html` on macos, or `firefox index.html` or alike on linux (
+`open index.html` on macos, or `firefox index.html` or alike on linux.
   
 Or just click.
 
