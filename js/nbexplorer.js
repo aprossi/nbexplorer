@@ -219,14 +219,17 @@ async function traverseFileTree(item, fileList, path = "") {
     if (item.isFile) {
       item.file(f => {
         f.fullPath = path + f.name;
-        if (f.name.endsWith('.ipynb') || f.name.endsWith('.py')) fileList.push(f);
+        if ((f.name.endsWith('.ipynb') || f.name.endsWith('.py')) && !f.name.startsWith('._')) fileList.push(f);
         resolve();
       });
     } else if (item.isDirectory) {
       const dirReader = item.createReader();
       dirReader.readEntries(async entries => {
         for (const entry of entries) {
-          await traverseFileTree(entry, fileList, path + item.name + "/");
+          // Skip macOS metadata directories
+          if (!entry.name.startsWith('._')) {
+            await traverseFileTree(entry, fileList, path + item.name + "/");
+          }
         }
         resolve();
       });
@@ -263,7 +266,7 @@ function buildTree(files) {
  * @param {FileList} files - The files to display in the gallery
  */
 function initGallery(files) {
-  const supportedFiles = Array.from(files).filter(f => f.name.endsWith('.ipynb') || f.name.endsWith('.py'));
+  const supportedFiles = Array.from(files).filter(f => (f.name.endsWith('.ipynb') || f.name.endsWith('.py')) && !f.name.startsWith('._'));
   if (!supportedFiles.length) {
     alert("No .ipynb or .py files found.");
     return;
@@ -286,7 +289,7 @@ function renderFolderView(node) {
 
   // Render folders first
   for (const [name, val] of Object.entries(node)) {
-    if (name !== 'files') {
+    if (name !== 'files' && !name.startsWith('._')) {
       const card = document.createElement('div');
       card.className = 'card folder';
       card.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h5l2 3h11a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1V7z"/></svg>' + name;
