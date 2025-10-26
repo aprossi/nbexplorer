@@ -1,8 +1,8 @@
-# Poor-Notebook Explorer
+# Poor-man Notebook Explorer
 
 A poor-man Jupyter notebook browser, for online or offline use.
 
-🔒 data NEVER leaves your computer. Open DevTools → Network tab → no requests after page load. 
+Data never leaves your computer. Open DevTools → Network tab → no requests after page load. 
 
 ## Advised usage:
 
@@ -20,7 +20,7 @@ In alternative one can locally serve e.g. with `python3 -m http.server 8080` and
 
 ## Summary of features
 
-* 🔒 **100% client-side** - NO data transmission, ZERO network requests after page load
+* **100% client-side** - NO data transmission, ZERO network requests after page load
 * js, css are local (works online or offline, no http server needed)
 * preview (not perfect, but ok-ish) of notebooks and scripts, including images (hopefully)
 * can load:
@@ -95,7 +95,6 @@ This application has **ZERO data transmission**. You can verify this yourself:
 * **No Storage**: Your files are kept in browser memory only and are discarded when you refresh the page or click "Clear All". No cookies, localStorage, or IndexedDB are used.
 * **XSS Protection**: All file contents are properly escaped before rendering to prevent cross-site scripting vulnerabilities (see `escapeHtml()` function in `js/nbexplorer.js:66-74`).
 *  **Open Source**: You can inspect the code yourself in `js/nbexplorer.js` to verify it only reads and displays your files locally.
-
 
 **For maximum privacy**: Download the repository and open `index.html` directly in your browser. No web server needed - it works with `file://` protocol (or any local server, such as `python3 -m http.server`).
 
