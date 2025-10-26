@@ -3,122 +3,23 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>(poor man) Jupyter Notebook Explorer</title>
+<title>(Poor-man) Jupyter Notebook Explorer</title>
 <link rel="stylesheet" href="css/highlight-11.9.0-github.min.css">
+<link rel="stylesheet" href="css/nbexplorer.css">
 <script src="js/highlight-11.9.0.min.js"></script>
-<style>
-:root {
-  --primary:#4c6ef5; --bg:#f8fafc; --border:#e5e7eb;
-  --radius:10px; --code-bg:#f9fafb;
-  --py-color:#3776ab; --ipynb-color:#f37626;
-}
-body {
-  font-family:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  background:var(--bg); color:#111; margin:0; padding:20px;
-}
-header { text-align:center; margin-bottom:20px; }
-header h1 { color:var(--primary); margin-bottom:10px; }
-.controls {
-  margin:15px auto; max-width:600px; text-align:center;
-  display:flex; gap:15px; justify-content:center; align-items:center;
-}
-.controls label { display:flex; align-items:center; gap:5px; }
-#dropzone {
-  border:2px dashed var(--primary); border-radius:var(--radius);
-  background:white; text-align:center; padding:50px 20px; cursor:pointer;
-  transition:all .25s ease;
-}
-#dropzone.dragover { background:#eef2ff; transform:scale(1.02); }
-#searchbar { margin-top:15px; text-align:center; }
-#searchbar input {
-  width:70%; max-width:400px; padding:10px 12px; border-radius:var(--radius);
-  border:1px solid var(--border); font-size:1em;
-}
-#breadcrumbs {
-  margin:20px auto; max-width:900px; font-size:0.9em; color:#555;
-}
-#breadcrumbs span { cursor:pointer; color:var(--primary); }
-#gallery {
-  display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-  gap:20px; margin-top:20px;
-}
-.card {
-  background:white; border-radius:var(--radius);
-  box-shadow:0 3px 8px rgba(0,0,0,0.1);
-  overflow:hidden; cursor:pointer;
-  transition:transform .2s ease, box-shadow .2s ease;
-  border-left:4px solid var(--primary);
-}
-.card:hover { transform:translateY(-4px); box-shadow:0 6px 16px rgba(0,0,0,0.15); }
-.card.ipynb { border-left-color:var(--ipynb-color); }
-.card.py { border-left-color:var(--py-color); }
-.card-header {
-  background:var(--primary); color:white; padding:10px 14px;
-  font-weight:600; text-overflow:ellipsis; white-space:nowrap; overflow:hidden;
-  display:flex; align-items:center; gap:8px;
-}
-.card.ipynb .card-header { background:var(--ipynb-color); }
-.card.py .card-header { background:var(--py-color); }
-.card-header::before {
-  content:"📓"; font-size:1.2em;
-}
-.card.py .card-header::before {
-  content:"🐍";
-}
-.card-content { padding:14px; font-size:0.85em; color:#333; max-height:200px; overflow:hidden; }
-pre {
-  background:var(--code-bg); padding:6px; border-radius:6px;
-  font-family:"Fira Code",monospace; font-size:0.8em; white-space:pre-wrap;
-  margin:4px 0;
-}
-pre.out {
-  background:#f0f9ff; border-left:3px solid #0ea5e9; padding-left:8px;
-  font-size:0.75em; color:#0369a1;
-}
-.folder {
-  display:flex; align-items:center; justify-content:center;
-  font-weight:600; font-size:1.2em; color:var(--primary);
-}
-.folder svg { margin-right:8px; }
-/* Modal viewer */
-#viewerModal {
-  display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
-  z-index:1000; overflow:auto; padding:40px 20px;
-}
-#viewerContent {
-  background:white; border-radius:12px; max-width:1000px; margin:auto;
-  padding:20px 30px; box-shadow:0 10px 30px rgba(0,0,0,0.3);
-}
-#viewerClose {
-  background:var(--primary); color:white; border:none;
-  padding:8px 14px; border-radius:8px; cursor:pointer; float:right;
-}
-.viewer-cell {
-  margin:15px 0; padding:12px; border-radius:8px;
-  border-left:4px solid #e5e7eb;
-}
-.viewer-cell.markdown {
-  background:#f8fafc; border-left-color:#10b981;
-}
-.viewer-cell.code {
-  background:#f9fafb; border-left-color:#6366f1;
-}
-.viewer-cell img {
-  max-width:100%; height:auto; border-radius:6px; margin:8px 0;
-}
-</style>
 </head>
 <body>
 
 <header>
-  <h1>Poor man Jupyter Notebook Explorer</h1>
-  <p>Drop a folder with .ipynb notebooks and .py scripts — view all in a gallery</p> 
+  <h1>Poor-man Jupyter Notebook Explorer</h1>
+  <p>Drop a folder with .ipynb notebooks and .py scripts — view all in a gallery</p>
+  <p><small>💡 Tip: Use ← → arrow keys to navigate files in the viewer</small></p> 
   <p><small>(It can run locally just downloading the <a href="https://github.com/aprossi/nbexplorer" target="_blank">repo</a>)</small></p>
 </header>
 
 <div class="controls">
   <label>
-    <input type="checkbox" id="showPyToggle"> Show Python scripts (.py)
+    <input type="checkbox" id="showPyToggle" checked> Show Python scripts (.py)
   </label>
   <button id="clearBtn" class="btn" style="padding:8px 16px;border:1px solid var(--border);border-radius:var(--radius);background:white;cursor:pointer;">Clear All</button>
 </div>
@@ -136,313 +37,21 @@ pre.out {
 <div id="breadcrumbs" style="display:none;"></div>
 <div id="gallery"></div>
 
-<!-- Inline modal viewer -->
+<!-- Modal viewer -->
 <div id="viewerModal">
   <div id="viewerContent">
-    <button id="viewerClose">Close</button>
+    <div id="viewerControls">
+      <button id="viewerPrev" title="Previous (←)">◀</button>
+      <button id="viewerClose">Close</button>
+      <button id="viewerNext" title="Next (→)">▶</button>
+    </div>
     <h2 id="viewerTitle"></h2>
     <div id="viewerBody"></div>
   </div>
 </div>
 
-<script>
-const dropzone=document.getElementById('dropzone');
-const folderInput=document.getElementById('folderInput');
-const gallery=document.getElementById('gallery');
-const searchbar=document.getElementById('searchbar');
-const searchInput=document.getElementById('searchInput');
-const breadcrumbs=document.getElementById('breadcrumbs');
-const modal=document.getElementById('viewerModal');
-const modalClose=document.getElementById('viewerClose');
-const viewerTitle=document.getElementById('viewerTitle');
-const viewerBody=document.getElementById('viewerBody');
-const showPyToggle=document.getElementById('showPyToggle');
-const clearBtn=document.getElementById('clearBtn');
-
-const cardMap=new Map();
-let folderStructure={};
-let currentPath=[];
-let showPyFiles=false;
-
-dropzone.addEventListener('click',()=>folderInput.click());
-['dragenter','dragover','dragleave','drop'].forEach(eName=>{
-  dropzone.addEventListener(eName,e=>{e.preventDefault();e.stopPropagation();});
-});
-['dragenter','dragover'].forEach(eName=>{
-  dropzone.addEventListener(eName,()=>dropzone.classList.add('dragover'));
-});
-['dragleave','drop'].forEach(eName=>{
-  dropzone.addEventListener(eName,()=>dropzone.classList.remove('dragover'));
-});
-dropzone.addEventListener('drop',async e=>{
-  const items=e.dataTransfer.items;
-  if(items && items.length){
-    const files=[];
-    for(const item of items){
-      const entry=item.webkitGetAsEntry && item.webkitGetAsEntry();
-      if(entry) await traverseFileTree(entry,files);
-    }
-    initGallery(files);
-  }else initGallery(e.dataTransfer.files);
-});
-folderInput.addEventListener('change',e=>initGallery(e.target.files));
-
-// Recursive file tree
-async function traverseFileTree(item,fileList,path=""){
-  return new Promise(resolve=>{
-    if(item.isFile){
-      item.file(f=>{
-        f.fullPath=path+f.name;
-        if(f.name.endsWith('.ipynb') || f.name.endsWith('.py')) fileList.push(f);
-        resolve();
-      });
-    } else if(item.isDirectory){
-      const dirReader=item.createReader();
-      dirReader.readEntries(async entries=>{
-        for(const entry of entries){
-          await traverseFileTree(entry,fileList,path+item.name+"/");
-        }
-        resolve();
-      });
-    } else resolve();
-  });
-}
-
-function buildTree(files){
-  const tree={};
-  for(const f of files){
-    const parts=f.fullPath.split('/');
-    let node=tree;
-    for(let i=0;i<parts.length;i++){
-      const part=parts[i];
-      if(i===parts.length-1){
-        if(!node.files) node.files=[];
-        node.files.push(f);
-      } else {
-        node[part]=node[part]||{};
-        node=node[part];
-      }
-    }
-  }
-  return tree;
-}
-
-function initGallery(files){
-  const supportedFiles=Array.from(files).filter(f=>f.name.endsWith('.ipynb') || f.name.endsWith('.py'));
-  if(!supportedFiles.length){alert("No .ipynb or .py files found.");return;}
-  folderStructure=buildTree(supportedFiles);
-  currentPath=[];
-  renderFolderView(folderStructure);
-  dropzone.style.display='none';
-  searchbar.style.display='block';
-  breadcrumbs.style.display='block';
-}
-
-function renderFolderView(node){
-  gallery.innerHTML='';
-  updateBreadcrumbs();
-  
-  // Render folders first
-  for(const [name,val] of Object.entries(node)){
-    if(name!=='files'){
-      const card=document.createElement('div');
-      card.className='card folder';
-      card.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 7h5l2 3h11a1 1 0 0 1 1 1v8a2 2 0 0 1-2 2H4a1 1 0 0 1-1-1V7z"/></svg>'+name;
-      card.onclick=()=>{currentPath.push(name);renderFolderView(node[name]);};
-      gallery.appendChild(card);
-    }
-  }
-  
-  // Render files
-  if(node.files){
-    node.files.forEach(file=>{
-      const ext=file.name.endsWith('.py')?'py':'ipynb';
-      if(!showPyFiles && ext==='py') return;
-      
-      const card=document.createElement('div');
-      card.className=`card ${ext}`;
-      const header=document.createElement('div');
-      header.className='card-header';
-      header.textContent=file.name;
-      const content=document.createElement('div');
-      content.className='card-content';
-      card.appendChild(header); card.appendChild(content);
-      gallery.appendChild(card);
-
-      const observer=new IntersectionObserver((entries,obs)=>{
-        entries.forEach(entry=>{
-          if(entry.isIntersecting){
-            obs.disconnect();
-            const reader=new FileReader();
-            reader.onload=e=>{
-              try{
-                if(ext==='ipynb'){
-                  const nb=JSON.parse(e.target.result);
-                  const html=renderNotebookPreview(nb);
-                  content.innerHTML=html;
-                  window.hljs&&hljs.highlightAll();
-                } else {
-                  const code=e.target.result.split('\n').slice(0,8).join('\n');
-                  content.innerHTML=`<pre><code class="language-python">${escapeHtml(code)}</code></pre>`;
-                  window.hljs&&hljs.highlightAll();
-                }
-                const id=Math.random().toString(36).slice(2);
-                cardMap.set(id,{filename:file.name,raw:e.target.result,type:ext});
-                card.onclick=()=>openNotebookModal(id);
-              }catch(err){content.textContent='Error parsing';}
-            };
-            reader.readAsText(file);
-          }
-        });
-      });
-      observer.observe(card);
-    });
-  }
-}
-
-function renderNotebookPreview(nb){
-  const cells=nb.cells||[];
-  let html=''; let shown=0;
-  for(const c of cells){
-    if(shown>=3) break;
-    if(c.cell_type==='markdown'){
-      html+=renderMarkdown(Array.isArray(c.source)?c.source.join(''):c.source);
-      shown++;
-    } else if(c.cell_type==='code'){
-      const src=(Array.isArray(c.source)?c.source.join(''):c.source)||'';
-      html+=`<pre><code class="language-python">${escapeHtml(src.trim())}</code></pre>`;
-      shown++;
-    }
-  }
-  return html;
-}
-
-function renderMarkdown(text){
-  if(!text) return '';
-  let html=text.replace(/^### (.*$)/gim,'<h3>$1</h3>')
-    .replace(/^## (.*$)/gim,'<h2>$1</h2>')
-    .replace(/^# (.*$)/gim,'<h1>$1</h1>')
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g,'<em>$1</em>')
-    .replace(/`([^`]+)`/g,'<code>$1</code>')
-    .replace(/\n\n/g,'</p><p>');
-  return '<p>'+html+'</p>';
-}
-
-function escapeHtml(s){return s.replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[m]));}
-
-function updateBreadcrumbs(){
-  breadcrumbs.innerHTML='';
-  const root=document.createElement('span');
-  root.textContent='🏠 root';
-  root.onclick=()=>{currentPath=[];renderFolderView(folderStructure);};
-  breadcrumbs.appendChild(root);
-  currentPath.forEach((seg,i)=>{
-    breadcrumbs.innerHTML+=' → ';
-    const span=document.createElement('span');
-    span.textContent=seg;
-    span.onclick=()=>{
-      currentPath=currentPath.slice(0,i+1);
-      let node=folderStructure;
-      currentPath.forEach(p=>node=node[p]);
-      renderFolderView(node);
-    };
-    breadcrumbs.appendChild(span);
-  });
-}
-
-searchInput.addEventListener('input',()=>{
-  const q=searchInput.value.toLowerCase();
-  [...gallery.children].forEach(c=>{
-    const t=c.textContent.toLowerCase();
-    c.style.display=t.includes(q)?'block':'none';
-  });
-});
-
-showPyToggle.addEventListener('change',e=>{
-  showPyFiles=e.target.checked;
-  renderFolderView(getCurrentNode());
-});
-
-clearBtn.addEventListener('click',()=>{
-  folderStructure={};
-  currentPath=[];
-  cardMap.clear();
-  gallery.innerHTML='';
-  breadcrumbs.style.display='none';
-  searchbar.style.display='none';
-  dropzone.style.display='block';
-});
-
-function getCurrentNode(){
-  let node=folderStructure;
-  currentPath.forEach(p=>node=node[p]);
-  return node;
-}
-
-function openNotebookModal(cardId){
-  const meta=cardMap.get(cardId);
-  if(!meta) return;
-  
-  viewerTitle.textContent=meta.filename;
-  
-  if(meta.type==='py'){
-    viewerBody.innerHTML=`<pre><code class="language-python">${escapeHtml(meta.raw)}</code></pre>`;
-    window.hljs&&hljs.highlightAll();
-  } else {
-    let nb;
-    try{nb=JSON.parse(meta.raw);}catch(err){alert('Parse error');return;}
-    viewerBody.innerHTML=renderFullNotebook(nb);
-    window.hljs&&hljs.highlightAll();
-  }
-  
-  modal.style.display='block';
-}
-
-modalClose.onclick=()=>{modal.style.display='none';viewerBody.innerHTML='';};
-window.onclick=e=>{if(e.target===modal){modal.style.display='none';viewerBody.innerHTML='';}};
-
-function renderFullNotebook(nb){
-  let html='';
-  (nb.cells||[]).forEach(c=>{
-    html+=`<div class="viewer-cell ${c.cell_type}">`;
-    
-    if(c.cell_type==='markdown'){
-      html+=renderMarkdown(Array.isArray(c.source)?c.source.join(''):c.source);
-    } else if(c.cell_type==='code'){
-      const src=(Array.isArray(c.source)?c.source.join(''):c.source)||'';
-      html+=`<pre><code class="language-python">${escapeHtml(src)}</code></pre>`;
-      
-      // Render outputs
-      (c.outputs||[]).forEach(o=>{
-        console.log('Output:', o); // Debug log
-        
-        // Prioritize image data over text
-        if(o.data&&o.data['image/png']){
-          html+=`<img src="data:image/png;base64,${o.data['image/png']}" style="max-width:100%;">`;
-        } else if(o.data&&o.data['image/jpeg']){
-          html+=`<img src="data:image/jpeg;base64,${o.data['image/jpeg']}" style="max-width:100%;">`;
-        } else if(o.data&&o.data['image/svg+xml']){
-          html+=`<img src="data:image/svg+xml;base64,${o.data['image/svg+xml']}" style="max-width:100%;">`;
-        } else if(o.data&&o.data['text/plain']){
-          const text=Array.isArray(o.data['text/plain'])?o.data['text/plain'].join(''):o.data['text/plain'];
-          // Skip matplotlib figure text representations
-          if(!text.includes('<Figure size') && !text.includes('Figure(')){
-            html+=`<pre class="out">${escapeHtml(text)}</pre>`;
-          }
-        } else if(o.output_type==='stream'&&o.text){
-          const text=Array.isArray(o.text)?o.text.join(''):o.text;
-          html+=`<pre class="out">${escapeHtml(text)}</pre>`;
-        }
-      });
-    }
-    
-    html+='</div>';
-  });
-  return html;
-}
-
-</script>
+<!-- Load the main application script -->
+<script src="js/nbexplorer.js"></script>
 
 <center>
 <footer>Code on <a href="https://github.com/aprossi/nbexplorer" target="_blank">https://github.com/aprossi/nbexplorer</a> <br> instance on <a href="https://aprossi.github.io/nbexplorer" target="_blank">https://aprossi.github.io/nbexplorer</a> <br><a href="https://github.com/aprossi/nbexplorer/blob/main/LICENSE" target="_blank">MIT License</a></footer>
