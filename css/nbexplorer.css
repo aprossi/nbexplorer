@@ -38,7 +38,18 @@ header h1 { color:var(--primary); margin-bottom:10px; }
   margin:20px auto; max-width:900px; font-size:0.9em; color:#555;
 }
 
-#breadcrumbs span { cursor:pointer; color:var(--primary); }
+#breadcrumbs .breadcrumb-item {
+  cursor:pointer;
+  user-select:none;
+  color:var(--primary);
+  transition:color 0.2s ease;
+  display:inline-block;
+}
+
+#breadcrumbs .breadcrumb-item:hover {
+  color:#3b5ecc;
+  text-decoration:underline;
+}
 
 #gallery {
   display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
@@ -131,8 +142,43 @@ pre.out {
   justify-self:end;
 }
 
+.btn {
+  padding:8px 16px;
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  background:white;
+  cursor:pointer;
+  transition:all 0.2s ease;
+}
+
+.btn:hover {
+  background:#f0f0f0;
+}
+
+.folder-icon {
+  font-size:2em;
+}
+
+footer {
+  text-align:center;
+  margin-top:40px;
+  padding:20px;
+  color:#666;
+  font-size:0.9em;
+}
+
 #viewerPrev:hover, #viewerNext:hover {
   background:#3b5ecc;
+}
+
+#viewerPrev.disabled, #viewerNext.disabled {
+  opacity:0.3;
+  cursor:default;
+  background:#ccc;
+}
+
+#viewerPrev.disabled:hover, #viewerNext.disabled:hover {
+  background:#ccc;
 }
 
 .viewer-cell {
